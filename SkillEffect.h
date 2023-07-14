@@ -1,14 +1,14 @@
 #pragma once
 #include <vector>
 // Game Object에 특정 효과를 부여 하는 클래스
-class Effect
+class SkillEffect
 {
 	int		m_expireTime;
 	short	m_type;			// 공업, 방업, 방깍, 공깍, 체업, 
 	int     m_value;		// 적용 값
 
 public:
-	Effect(int expireTime, short type, int value) 
+	SkillEffect(int expireTime, short type, int value)
 	{
 		m_expireTime	= expireTime;
 		m_type			= type;
