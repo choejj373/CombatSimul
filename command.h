@@ -1,9 +1,11 @@
 #pragma once
 
 #include "ICombatObject.h"
-
+#include <memory>
 class Party;
 class Object;
+class SkillEffect;
+
 class Command
 {
 protected:
@@ -29,18 +31,6 @@ public:
 	void Exec();
 };
 
-class CCmdHeal : public Command {
-public:
-	CCmdHeal(Party* target, Object* owner, int hp)
-	{
-		m_target = target;
-		m_owner = owner;
-		m_value = hp;
-	}
-	void Exec();
-
-};
-
 class CCmdDamageWide : public Command{
 public:
 	CCmdDamageWide(Party* target, Object* owner, int damage)
@@ -54,15 +44,20 @@ public:
 
 };
 
-class CCmdHealWide : public Command {
+class CCmdSkill : public Command {
+
+	std::shared_ptr<SkillEffect>	m_effect;
+	Party*							m_ally = nullptr;
+
 public:
-	CCmdHealWide(Party* target, Object* owner, int hp)
+	virtual ~CCmdSkill();
+	CCmdSkill(Party* target, Party* ally, Object* owner, const std::shared_ptr<SkillEffect>& effect)
 	{
-		m_target = target;
-		m_owner = owner;
-		m_value = hp;
+		m_ally		= ally;
+		m_target	= target;
+		m_owner		= owner;
+		m_effect	= effect;
 	}
 
 	void Exec();
-
 };

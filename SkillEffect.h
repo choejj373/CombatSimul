@@ -1,39 +1,50 @@
 #pragma once
 #include <vector>
 // Game Object에 특정 효과를 부여 하는 클래스
+enum class TYPE : short {
+	INVALID = -1,
+	ADDHP,
+	SUBHP,
+	MAX
+};
+
+enum class TARGET_TYPE : short {
+	INVALID = -1,
+	SELF,
+	ALLY,
+	ENEMY,
+};
+
 class SkillEffect
 {
-	int		m_expireTime;
-	short	m_type;			// 공업, 방업, 방깍, 공깍, 체업, 
-	int     m_value;		// 적용 값
+protected:
+	int			m_expireTime		= 0;					// 지속 시간, 0 이면 즉시 발동
+	TYPE		m_type				= TYPE::INVALID;		// HP ADD(힐), HP SUB(공격)
+	int			m_value				= 0 ;					// 적용 값
+	TARGET_TYPE	m_targetType		= TARGET_TYPE::INVALID;	// 자기 자신, 아군, 적
+	short		m_targetMaxCount	= 0;					// 
+	
+	
+	short		m_findTargetType = 0;;	//? 가장 가까운, 체력이 가장 적은, 공격력이 가장 높은 등;
+	
+	
 
 public:
-	SkillEffect(int expireTime, short type, int value)
-	{
-		m_expireTime	= expireTime;
-		m_type			= type;
-		m_value			= value;
-	}
+	SkillEffect();
+	SkillEffect(int expireTime, TYPE type, int value, TARGET_TYPE targetType, short targetMaxCount );
 
-	bool isExpired(int nowTime)
-	{ 
-		if (nowTime >= m_expireTime)
-			return true;
+	bool isExpired(int nowTime);
 
-		return false;
-	}
+	int  getValue() const { return m_value; }
+	TYPE getType() const { return m_type; }
+	TARGET_TYPE	getTargetType() const { return m_targetType; }
+	short getTargetMaxCount() const { return m_targetMaxCount; }
 
-	bool updateFrame(std::vector<int>& values, int nowTime)
-	{
-		if (isExpired(nowTime))
-			return false;
+	bool isContinuous() const { return (m_expireTime == 0) ? false : true; }
 
-		if (values.size() < m_type)
-			return false;
-
-		values[m_type - 1] += m_value;
-		return true;
-	}
+public: 
+	//지속 효과일 경우 Object에서 호출하는 함수
+	bool updateFrame(std::vector<int>& values, int nowTime);
 
 };
 

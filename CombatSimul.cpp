@@ -94,14 +94,14 @@ void test(std::vector<int>& p1_value, std::vector<int>& p2_value)
     }
 
 
-    // 1tick == 1ms 이라고 가정하면 최대 100초동안 시뮬을 돌린다.
+    // 1tick == 1ms 이라고 가정하면 최대 120초동안 시뮬을 돌린다.
 
-    int max = 1000 * 100;
+    int max = 1000 * 120;
     int i = 0;
 
     CommandQ cmdQ;
 
-    for (; i < max; i += 100 )
+    for (; i < max; i += 33 )
     {
         p1->updateFrame(cmdQ, i, p2);
         p2->updateFrame(cmdQ, i, p1);

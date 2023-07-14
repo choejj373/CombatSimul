@@ -1,16 +1,23 @@
 #pragma once
 #include <string>
+#include <memory>
 
 class ICombatObject;
 class Party;
 class Object;
 class CommandQ;
+class SkillEffect;
+/// <summary>
+/// USER_SKILL TABLE과 SKILL_LIST, EFFECT_LIST를 이용하면 Skill을 상속한 자식 클래스들의 갯수를 줄일 수 있다.
+/// </summary>
 class Skill
 {
-    int m_coolTimeTick;
-    int m_prevProcessTick;
+protected:
+    int m_coolTimeTick      = 0;
+    int m_prevProcessTick   = -1;
 
 public:
+    Skill() {}
     Skill( int coolTimeTick);
     virtual ~Skill();
     void updateFrame(CommandQ& cmdQ, int nowTick, Party* enemy, Party* ourTeam, Object* owner);
@@ -20,25 +27,33 @@ public:
 };
 
 class SkillDamage : public Skill {
+    std::shared_ptr<SkillEffect>    m_effect;
+
 public:
-    SkillDamage(int coolTimeTick) : Skill(coolTimeTick) {}
+    SkillDamage(int coolTimeTick);
     void process(CommandQ& cmdQ, int processTime, Party* enemy, Party* ourTeam, Object* owner);
 };
 
 class SkillDamageWide : public Skill {
+    std::shared_ptr<SkillEffect>    m_effect;
+
 public:
-    SkillDamageWide(int coolTimeTick) : Skill(coolTimeTick) {}
+    SkillDamageWide(int coolTimeTick);
     void process(CommandQ& cmdQ, int processTime, Party* enemy, Party* ourTeam, Object* owner);
 };
 
 class SkillHeal : public Skill {
+    std::shared_ptr<SkillEffect>    m_effect;
+
 public:  
-    SkillHeal(int coolTimeTick) : Skill(coolTimeTick) {}
+    SkillHeal(int coolTimeTick);
     void process(CommandQ& cmdQ, int processTime, Party* enemy, Party* ourTeam, Object* owner);
 };
 
 class SkillHealWide : public Skill {
+    std::shared_ptr<SkillEffect>    m_effect;
+
 public:
-    SkillHealWide(int coolTimeTick) : Skill(coolTimeTick) {}
+    SkillHealWide(int coolTimeTick);
     void process(CommandQ& cmdQ, int processTime, Party* enemy, Party* ourTeam, Object* owner);
 };

@@ -31,18 +31,8 @@ public:
     void addSkill(Skill* skill) {
         m_skillList.push_back(skill);
     }
-    
-    //Party* getParty() {
-    //    return m_party;
-    //}
-
-    //void setParty( Party* party) {
-    //    m_party = party;
-    //}
 
     void setStat( int hp, int damage, int attackSpeed) {
-//        std::cout << hp << ", " << damage << ", " << attackSpeed << std::endl;
-        
         m_hp = hp;
         m_damage = damage;
         m_attackSpeed = attackSpeed;
@@ -51,14 +41,13 @@ public:
 public:
     void updateFrame(CommandQ& cmdQ, int nowTick, Party* enemy, Party* ourTeam );
 
-    //void damagedAll(int damage, std::string&);
-    //void healAll(int hp, std::string&);
-    bool damaged(int damage, std::string&);
-    bool heal(int _hp, std::string& );
+    bool    damaged(int damage, const std::string&);
+    bool    heal(int _hp, const std::string& );
 
-    int getHp() { return m_hp; }
-    bool isDead() { return (m_hp <= 0) ? true : false; }
-    std::string& getName() { return m_name; }
+    int     getHp() { return m_hp; }
+    bool    isDead() { return (m_hp <= 0) ? true : false; }
+
+    const std::string& getName() const  { return m_name; }
 
 };
 

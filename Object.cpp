@@ -51,7 +51,7 @@ void Object::updateFrame(CommandQ& cmdQ, int nowTick, Party* enemy, Party* ourTe
  
 }
 
-bool Object::damaged(int damage, std::string& attacker ) {
+bool Object::damaged(int damage, const std::string& attacker ) {
 
     if (isDead()) {
         return false;
@@ -59,7 +59,7 @@ bool Object::damaged(int damage, std::string& attacker ) {
 
     m_hp -= damage;
 
- //   std::cout << m_name <<"(hp:" << std::to_string(m_hp) << ") is Damaged(damage:" << std::to_string(damage) <<") from " << attacker << std::endl;
+    //std::cout << m_name <<"(hp:" << std::to_string(m_hp) << ") is Damaged(damage:" << std::to_string(damage) <<") from " << attacker << std::endl;
 
     if( isDead() )
         std::cout << m_name << " is Dead" << std::endl;
@@ -67,13 +67,13 @@ bool Object::damaged(int damage, std::string& attacker ) {
     return true;
 }
 
-bool Object::heal(int _hp, std::string& healer) {
+bool Object::heal(int _hp, const std::string& healer) {
     if (isDead()) {
         return false;
     }
 
     m_hp += _hp;
 
-//    std::cout << getName() << "(HP:" << std::to_string(m_hp) << ") is Healed(hp:" << std::to_string(_hp) << ")  from " << healer << std::endl;
+    //std::cout << getName() << "(HP:" << std::to_string(m_hp) << ") is Healed(hp:" << std::to_string(_hp) << ")  from " << healer << std::endl;
     return true;
 }
