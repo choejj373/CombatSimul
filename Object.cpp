@@ -21,6 +21,8 @@ Object::Object( const char* name)
     m_party = nullptr;
 
     m_name = name;
+
+    std::cout << "Object::Object" << std::endl;
 }
 Object::~Object()
 {
@@ -30,6 +32,8 @@ Object::~Object()
     m_skillList.clear();
 
     m_continuousEffectList.clear();
+
+    std::cout << "Object::~Object" << std::endl;
 
 }
 
@@ -117,7 +121,7 @@ void Object::updateContinuousEffect(CommandQ& cmdQ, int nowTime, Party* ally)
     for (auto it = m_continuousEffectList.begin(); it != m_continuousEffectList.end(); ++it)
     {
         auto effect = std::get<1>(*it);
-        effect->updateFrame(cmdQ, nowTime, ally, this, effect);
+        effect->updateFrame(cmdQ, nowTime, ally, this);
     }
 
     auto it = m_continuousEffectList.begin();
