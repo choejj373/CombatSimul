@@ -158,7 +158,6 @@
     <ClInclude Include="effect.h" />
     <ClInclude Include="PRNG.h" />
     <ClInclude Include="SkillEffect.h" />
-    <ClInclude Include="ICombatObject.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Party.h" />
     <ClInclude Include="Skill.h" />
