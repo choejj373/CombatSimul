@@ -14,21 +14,21 @@ ContinuousEffect::ContinuousEffect(int continuousTime, int intervalTime, int val
 	m_prevProcessTime = -1;
 }
 
-void ContinuousEffect::updateFrame(CommandQ& cmdQ, int nowTime, Party* ally, Object* owner)
+void ContinuousEffect::updateFrame(CommandQ& cmdQ, int nowTime, Party* ally, Object* owner, std::shared_ptr<ContinuousEffect>& effect)
 {
 	if (m_intervalTime > 0)
 	{
 		if (m_prevProcessTime == -1)
 		{
 			m_prevProcessTime = nowTime;
-			cmdQ.push_back(m_prevProcessTime, new CCmdEffect(this, owner, ally));//shared_ptr로 관리중인데 this를 막 넘기면 안됨;;
+			cmdQ.push_back(m_prevProcessTime, new CCmdEffect(effect, owner, ally));//shared_ptr로 관리중인데 this를 막 넘기면 안됨;;
 		}
 		else
 		{
 			while (nowTime >= m_prevProcessTime + m_intervalTime)
 			{
 				m_prevProcessTime += m_intervalTime;
-				cmdQ.push_back(m_prevProcessTime, new CCmdEffect(this, owner, ally));//shared_ptr로 관리중인데 this를 막 넘기면 안됨;;
+				cmdQ.push_back(m_prevProcessTime, new CCmdEffect(effect, owner, ally));//shared_ptr로 관리중인데 this를 막 넘기면 안됨;;
 			}
 		}
 	}

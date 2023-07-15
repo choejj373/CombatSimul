@@ -4,7 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <memory>
-#include "ICombatObject.h"
+
 #include "effect.h"
 
 class Skill;
@@ -13,7 +13,7 @@ class Effect;
 class CommandQ;
 class SkillEffect;
 class ContinuousEffect;
-class Object : public ICombatObject
+class Object
 {
 	std::vector<Skill*>                     m_skillList;
 
@@ -42,7 +42,7 @@ public:
     }
 
     void    addContinuousEffect(int nowTime, const std::shared_ptr<SkillEffect>& effect);
-    void    continuousEffected(ContinuousEffect* effect, const std::string& ownerName);
+    void    continuousEffected(std::shared_ptr<ContinuousEffect>& effect, const std::string& ownerName);
     void    applyEffect(EFFECT_TYPE type, int value, const std::string& ownerName);
 private:
     void    updateContinuousEffect(CommandQ& cmdQ, int nowTime, Party* ally);

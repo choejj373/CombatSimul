@@ -70,13 +70,13 @@ public:
 };
 
 class CCmdEffect : public Command {
-	//std::shared_ptr<ContinuousEffect>	m_effect;
-	ContinuousEffect*	m_effect;
+	std::shared_ptr<ContinuousEffect>	m_effect;
+
 	Party* m_ally = nullptr;
 
 public:
 	virtual ~CCmdEffect();
-	CCmdEffect(ContinuousEffect* effect, Object* owner, Party* ally);
+	CCmdEffect(std::shared_ptr<ContinuousEffect>& effect, Object* owner, Party* ally);
 
 	void Exec(int nowTime);
 

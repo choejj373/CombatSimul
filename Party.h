@@ -2,13 +2,13 @@
 #include <string>
 #include <list>
 #include <memory>
-#include "ICombatObject.h"
+
 class Object;
 class CommandQ;
 class SkillEffect;
 class ContinuousEffect;
 
-class Party : public ICombatObject
+class Party
 {
     std::list<Object*> m_memberList;
     std::string m_name;

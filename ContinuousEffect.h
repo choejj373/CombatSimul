@@ -1,8 +1,6 @@
 #pragma once
-/// <summary>
-/// 지속 효과 클래스 from SkillEffect 
-/// </summary>
-/// 
+
+#include <memory>
 #include "effect.h"
 
 class Object;
@@ -31,6 +29,6 @@ public:
 	short		getTargetMaxCount() const { return m_targetMaxCount; }
 	EFFECT_TYPE		getType() const { return m_type; }
 
-	void	updateFrame(CommandQ& cmdQ, int nowTime, Party* ally, Object* owner);
+	void	updateFrame(CommandQ& cmdQ, int nowTime, Party* ally, Object* owner, std::shared_ptr<ContinuousEffect>& effect );
 };
 

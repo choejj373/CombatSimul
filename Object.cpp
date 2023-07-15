@@ -117,7 +117,7 @@ void Object::updateContinuousEffect(CommandQ& cmdQ, int nowTime, Party* ally)
     for (auto it = m_continuousEffectList.begin(); it != m_continuousEffectList.end(); ++it)
     {
         auto effect = std::get<1>(*it);
-        effect->updateFrame(cmdQ, nowTime, ally, this);
+        effect->updateFrame(cmdQ, nowTime, ally, this, effect);
     }
 
     auto it = m_continuousEffectList.begin();
@@ -132,7 +132,7 @@ void Object::updateContinuousEffect(CommandQ& cmdQ, int nowTime, Party* ally)
 }
 
 
-void Object::continuousEffected(ContinuousEffect* effect, const std::string& ownerName)
+void Object::continuousEffected(std::shared_ptr<ContinuousEffect>& effect, const std::string& ownerName)
 {
     applyEffect(effect->getType(), effect->getValue(), ownerName);
 }
