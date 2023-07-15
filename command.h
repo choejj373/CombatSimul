@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ICombatObject.h"
 #include <memory>
 class Party;
 class Object;

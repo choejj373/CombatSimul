@@ -1,7 +1,7 @@
 #include "Skill.h"
 #include <iostream>
 
-#include "ICombatObject.h"
+
 #include "Party.h"
 #include "Object.h"
 #include "commandq.h"
