@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Object.h"
 #include "SkillEffect.h"
+#include "ContinuousEffect.h"
 
 Party::~Party()
 {
@@ -58,7 +59,7 @@ bool Party::isDead()
 {
     for (auto member : m_memberList )
     {
-        if ( !member->isDead()) {
+        if ( member->isAlive()) {
             return false;
         }
     };
@@ -74,11 +75,16 @@ void Party::updateFrame(CommandQ& cmdQ, int nowTick, Party* enemy) {
         obj->updateFrame( cmdQ, nowTick, enemy, this ); });
 }
 
-void Party::skillEffected(const std::shared_ptr<SkillEffect>& effect, const std::string& ownerName){
+void Party::skillEffected(int nowTime, const std::shared_ptr<SkillEffect>& effect, const std::string& ownerName){
     if (effect->isContinuous())// 지속 효과 일 경우
     {
         // effect에 정의된 findTargetType에 따라서 타겟을 찾아 effect를 넣어준다.
         // effect shared_ptr 써야 될듯;; 여러곳에서 참조한다.
+        int i = 0;
+        for (auto iter = m_memberList.begin(); i < effect->getTargetMaxCount() && iter != m_memberList.end(); ++i, ++iter)
+        {
+            (*iter)->addContinuousEffect(nowTime, effect);
+        }
     }
     else// 즉시 효과 발동 일 경우
     {
@@ -86,17 +92,17 @@ void Party::skillEffected(const std::shared_ptr<SkillEffect>& effect, const std:
         int i = 0;
         for ( auto iter = m_memberList.begin(); i < effect->getTargetMaxCount() && iter != m_memberList.end() ; ++i, ++iter)
         {
-            switch (effect->getType())
-            {
-            case TYPE::ADDHP:
-                (*iter)->heal(effect->getValue(), ownerName);
-                break;
-            case TYPE::SUBHP:
-                (*iter)->damaged(effect->getValue(), ownerName);
-                break;
-            default:
-                break;
-            }
+            (*iter)->applyEffect(effect->getType(), effect->getValue(), ownerName);
         }
+    }
+}
+
+void Party::continuousEffected(const std::shared_ptr<ContinuousEffect>& effect, const std::string& ownerName)
+{
+    // effect->getContinuousFindTargetType()에 따라서 별도로 Target을 찾아야 한다.
+    int  i = 0;
+    for (auto iter = m_memberList.begin(); i < effect->getTargetMaxCount() && iter != m_memberList.end(); ++i, ++iter)
+    {
+        (*iter)->applyEffect(effect->getType(), effect->getValue(), ownerName);
     }
 }

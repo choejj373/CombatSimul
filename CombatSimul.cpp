@@ -5,7 +5,7 @@
 #include <chrono>
 #include <algorithm>
 #include <tuple>
-
+#include <windows.h>
 #include "Party.h"
 #include "Object.h"
 #include "Skill.h"
@@ -35,6 +35,12 @@ Skill* MakeSkill(int type, int coolTime)
         break;
     case 4:
         newSkill = new SkillHealWide(coolTime);
+        break;
+    case 5:
+        newSkill = new SkillHealDot(coolTime);
+        break;
+    case 6:
+        newSkill = new SkillDamageDot(coolTime);
         break;
     default:
         throw std::runtime_error("Invalid Skill Type");
@@ -101,7 +107,7 @@ void test(std::vector<int>& p1_value, std::vector<int>& p2_value)
 
     CommandQ cmdQ;
 
-    for (; i < max; i += 33 )
+    for (; i < max; i ++ )
     {
         p1->updateFrame(cmdQ, i, p2);
         p2->updateFrame(cmdQ, i, p1);
@@ -112,7 +118,7 @@ void test(std::vector<int>& p1_value, std::vector<int>& p2_value)
         {
             std::tuple<int, Command*> item = cmdQ.at(i);
             Command* cmd = std::get<1>(item);
-            cmd->Exec();
+            cmd->Exec(std::get<0>(item));
             delete cmd;
         }
 
@@ -137,6 +143,8 @@ void test(std::vector<int>& p1_value, std::vector<int>& p2_value)
     delete p2;
 }
 
+#include "PRNG.h"
+
 int main()
 {
     //std::ostringstream sss;
@@ -148,7 +156,7 @@ int main()
 
 
 
-        
+    //    
 
     auto tp1 = system_clock::now(); // 현재 시간 리턴
 
@@ -165,10 +173,10 @@ int main()
                1,2000,
                4,2500,
            20000, 500, 1000,
-               1,1000,
+               5,10000,
                1,2500,
                1,3000,
-               1,2000,
+               6,10000,
            10000, 500, 1000,
                1,4000,
                1,4500,
@@ -193,10 +201,10 @@ int main()
             1, 2000,
             4, 2500,
         20000, 500, 1000,
-            1, 1000,
+            5, 10000,
             1, 2500,
             1, 3000,
-            1, 2000,
+            6, 10000,
         20000, 500, 1000,
             1, 4000,
             1, 4500,
@@ -216,7 +224,7 @@ int main()
     std::cout << duration_cast<milliseconds>(tp2 - tp1) << std::endl;
 
 
-
+   
 
     system("pause");
 }

@@ -144,6 +144,8 @@
     <ClCompile Include="CombatSimul.cpp" />
     <ClCompile Include="command.cpp" />
     <ClCompile Include="CommandQ.cpp" />
+    <ClCompile Include="ContinuousEffect.cpp" />
+    <ClCompile Include="PRNG.cpp" />
     <ClCompile Include="SkillEffect.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Party.cpp" />
@@ -152,6 +154,9 @@
   <ItemGroup>
     <ClInclude Include="command.h" />
     <ClInclude Include="CommandQ.h" />
+    <ClInclude Include="ContinuousEffect.h" />
+    <ClInclude Include="effect.h" />
+    <ClInclude Include="PRNG.h" />
     <ClInclude Include="SkillEffect.h" />
     <ClInclude Include="ICombatObject.h" />
     <ClInclude Include="Object.h" />

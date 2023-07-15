@@ -6,6 +6,7 @@
 class Object;
 class CommandQ;
 class SkillEffect;
+class ContinuousEffect;
 
 class Party : public ICombatObject
 {
@@ -27,7 +28,8 @@ public:
     void updateFrame( CommandQ&, int nowTick, Party* enemy);
 
 public:
-    void skillEffected(const std::shared_ptr<SkillEffect>& effect, const std::string& ownerName );
+    void skillEffected(int nowTime, const std::shared_ptr<SkillEffect>& effect, const std::string& ownerName );
+    void continuousEffected(const std::shared_ptr<ContinuousEffect>& effect, const std::string& ownerName);
 
 private:
 

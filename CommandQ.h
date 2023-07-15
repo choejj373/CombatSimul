@@ -1,6 +1,9 @@
 #pragma once
 #include <vector>
 class Command;
+/// <summary>
+/// multimap 은 현재 클라이언트를 구현한 javascript에는 없는 container라서 채택 안함
+/// </summary>
 class CommandQ
 {
 	std::vector<std::tuple<int,Command*>> m_list;

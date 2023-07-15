@@ -26,7 +26,7 @@ void Skill::updateFrame(CommandQ& cmdQ, int nowTick, Party* enemy, Party* ourTea
         m_prevProcessTick = nowTick;
         process(cmdQ, m_prevProcessTick, enemy, ourTeam, owner);
     }
-    else
+    else if( m_coolTimeTick > 0 )
     {
         while (nowTick >= m_prevProcessTick + m_coolTimeTick)
         {
@@ -39,7 +39,7 @@ void Skill::updateFrame(CommandQ& cmdQ, int nowTick, Party* enemy, Party* ourTea
 SkillDamage::SkillDamage(int coolTimeTick)
 {
     m_coolTimeTick = coolTimeTick;
-    m_effect = std::make_shared<SkillEffect>(0, TYPE::SUBHP, 500, TARGET_TYPE::ENEMY, 1);
+    m_effect = std::make_shared<SkillEffect>(0, EFFECT_TYPE::SUBHP, 500, EFFECT_TARGET_TYPE::ENEMY, 1);
 }
 
 void SkillDamage::process(CommandQ& cmdQ, int processTime, Party* enemy, Party* ourTeam, Object* owner)
@@ -51,7 +51,7 @@ void SkillDamage::process(CommandQ& cmdQ, int processTime, Party* enemy, Party* 
 SkillDamageWide::SkillDamageWide(int coolTimeTick)
 {
     m_coolTimeTick = coolTimeTick;
-    m_effect = std::make_shared<SkillEffect>(0, TYPE::SUBHP, 100, TARGET_TYPE::ENEMY, 5);
+    m_effect = std::make_shared<SkillEffect>(0, EFFECT_TYPE::SUBHP, 150, EFFECT_TARGET_TYPE::ENEMY, 5);
 }
 
 void SkillDamageWide::process(CommandQ& cmdQ, int processTime, Party* enemy, Party* ourTeam, Object* owner)
@@ -63,7 +63,7 @@ void SkillDamageWide::process(CommandQ& cmdQ, int processTime, Party* enemy, Par
 SkillHealWide::SkillHealWide(int coolTimeTick)
 {
     m_coolTimeTick = coolTimeTick;
-    m_effect = std::make_shared<SkillEffect>(0, TYPE::ADDHP, 100, TARGET_TYPE::ALLY, 5);
+    m_effect = std::make_shared<SkillEffect>(0, EFFECT_TYPE::ADDHP, 150, EFFECT_TARGET_TYPE::ALLY, 5);
 }
 
 void SkillHealWide::process(CommandQ& cmdQ, int processTime, Party* enemy, Party* ourTeam, Object* owner)
@@ -75,10 +75,34 @@ void SkillHealWide::process(CommandQ& cmdQ, int processTime, Party* enemy, Party
 SkillHeal::SkillHeal(int coolTimeTick)
 {
     m_coolTimeTick = coolTimeTick;
-    m_effect = std::make_shared<SkillEffect>(0, TYPE::ADDHP, 300, TARGET_TYPE::ALLY, 1 );
+    m_effect = std::make_shared<SkillEffect>(0, EFFECT_TYPE::ADDHP, 300, EFFECT_TARGET_TYPE::ALLY, 1 );
 }
 
 void SkillHeal::process(CommandQ& cmdQ, int processTime, Party* enemy, Party* ourTeam, Object* owner)
+{
+    cmdQ.push_back(processTime, new CCmdSkill(ourTeam, ourTeam, owner, m_effect));
+}
+
+
+SkillHealDot::SkillHealDot(int coolTimeTick)
+{
+    m_coolTimeTick = coolTimeTick;
+    m_effect = std::make_shared<SkillEffect>(5000, EFFECT_TYPE::ADDHP, 200, EFFECT_TARGET_TYPE::ALLY, 1, 1000);
+}
+
+void SkillHealDot::process(CommandQ& cmdQ, int processTime, Party* enemy, Party* ourTeam, Object* owner)
+{
+    cmdQ.push_back(processTime, new CCmdSkill(ourTeam, ourTeam, owner, m_effect));
+}
+
+
+SkillDamageDot::SkillDamageDot(int coolTimeTick)
+{
+    m_coolTimeTick = coolTimeTick;
+    m_effect = std::make_shared<SkillEffect>(7000, EFFECT_TYPE::SUBHP, 100, EFFECT_TARGET_TYPE::ENEMY, 1, 1000);
+}
+
+void SkillDamageDot::process(CommandQ& cmdQ, int processTime, Party* enemy, Party* ourTeam, Object* owner)
 {
     cmdQ.push_back(processTime, new CCmdSkill(ourTeam, ourTeam, owner, m_effect));
 }
