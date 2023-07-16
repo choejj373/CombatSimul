@@ -107,7 +107,7 @@ void test(std::vector<int>& p1_value, std::vector<int>& p2_value)
 
     CommandQ cmdQ;
 
-    for (; i < max; i ++ )
+    for (; i < max; i += 10 )
     {
         p1->updateFrame(cmdQ, i, p2);
         p2->updateFrame(cmdQ, i, p1);
@@ -182,7 +182,7 @@ int main()
                1,4500,
                1,5000,
                1, 5000,
-           50000, 500, 1000,
+           30000, 500, 1000,
                1,4000,
                1,4500,
                1,5000,
@@ -210,7 +210,7 @@ int main()
             1, 4500,
             1, 5000,
             1, 5000,
-        50000, 500, 1000,
+        20000, 500, 1000,
             1, 4000,
             1, 4500,
             1, 5000,

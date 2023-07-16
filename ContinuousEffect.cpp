@@ -14,31 +14,18 @@ ContinuousEffect::ContinuousEffect(int continuousTime, int intervalTime, int val
 	m_targetMaxCount = targetMaxCount;
 	m_type = type;
 
-	m_prevProcessTime = -1;
+	m_loopUpdater.init(-1, intervalTime);
 
-	std::cout << "ContinuousEffect::ContinuousEffect" << std::endl;
+	//std::cout << "ContinuousEffect::ContinuousEffect" << std::endl;
 }
 ContinuousEffect::~ContinuousEffect()
 {
-	std::cout << "ContinuousEffect::~ContinuousEffect" << std::endl;
+	//std::cout << "ContinuousEffect::~ContinuousEffect" << std::endl;
 }
 void ContinuousEffect::updateFrame(CommandQ& cmdQ, int nowTime, Party* ally, Object* owner)
 {
-	if (m_intervalTime > 0)
-	{
-		std::shared_ptr<ContinuousEffect> sharedPtr = shared_from_this();
-		if (m_prevProcessTime == -1)
-		{
-			m_prevProcessTime = nowTime;
-			cmdQ.push_back(m_prevProcessTime, new CCmdEffect(sharedPtr, owner, ally));//shared_ptr로 관리중인데 this를 막 넘기면 안됨;;
-		}
-		else
-		{
-			while (nowTime >= m_prevProcessTime + m_intervalTime)
-			{
-				m_prevProcessTime += m_intervalTime;
-				cmdQ.push_back(m_prevProcessTime, new CCmdEffect(sharedPtr, owner, ally));//shared_ptr로 관리중인데 this를 막 넘기면 안됨;;
-			}
-		}
-	}
+	std::shared_ptr<ContinuousEffect> sharedPtr = shared_from_this();
+	m_loopUpdater.Update(nowTime, [&](int time) {
+		cmdQ.push_back(time, new CCmdEffect(sharedPtr, owner, ally));
+	});
 }

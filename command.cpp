@@ -47,11 +47,11 @@ CCmdEffect::CCmdEffect(const std::shared_ptr<ContinuousEffect>& effect, Object* 
 	m_effect = effect; 
 	m_owner = owner; 
 	m_ally = ally;
-	std::cout << "CCmdEffect::CCmdEffect" << std::endl;
+//	std::cout << "CCmdEffect::CCmdEffect" << std::endl;
 }
 CCmdEffect::~CCmdEffect()
 {
-	std::cout << "CCmdEffect::~CCmdEffect" << std::endl;
+//	std::cout << "CCmdEffect::~CCmdEffect" << std::endl;
 }
 void CCmdEffect::Exec(int nowTime)
 {

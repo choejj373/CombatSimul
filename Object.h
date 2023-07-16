@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "effect.h"
+#include "LoopUpdater.h"
 
 class Skill;
 class Party;
@@ -13,6 +14,7 @@ class Effect;
 class CommandQ;
 class SkillEffect;
 class ContinuousEffect;
+
 class Object
 {
 	std::vector<Skill*>                     m_skillList;
@@ -27,6 +29,7 @@ class Object
 	int m_attackSpeed;
 
 	Party* m_party;
+    LoopUpdater m_loopUpdater;
 
 public:
     virtual ~Object();
@@ -35,11 +38,7 @@ public:
         m_skillList.push_back(skill);
     }
 
-    void setStat( int hp, int damage, int attackSpeed) {
-        m_hp = hp;
-        m_damage = damage;
-        m_attackSpeed = attackSpeed;
-    }
+    void setStat(int hp, int damage, int attackSpeed);
 
     void    addContinuousEffect(int nowTime, const std::shared_ptr<SkillEffect>& effect);
     void    continuousEffected(std::shared_ptr<ContinuousEffect>& effect, const std::string& ownerName);

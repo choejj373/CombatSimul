@@ -22,7 +22,8 @@ Object::Object( const char* name)
 
     m_name = name;
 
-    std::cout << "Object::Object" << std::endl;
+
+    //std::cout << "Object::Object" << std::endl;
 }
 Object::~Object()
 {
@@ -33,8 +34,17 @@ Object::~Object()
 
     m_continuousEffectList.clear();
 
-    std::cout << "Object::~Object" << std::endl;
+    //std::cout << "Object::~Object" << std::endl;
 
+}
+
+void Object::setStat(int hp, int damage, int attackSpeed)
+{
+    m_loopUpdater.init(-1, attackSpeed);
+
+    m_hp = hp;
+    m_damage = damage;
+    m_attackSpeed = attackSpeed;
 }
 
 void Object::updateFrame(CommandQ& cmdQ, int nowTime, Party* enemy, Party* ourTeam) {
@@ -47,20 +57,25 @@ void Object::updateFrame(CommandQ& cmdQ, int nowTime, Party* enemy, Party* ourTe
 
 
     //물리 공격
-    if (m_prevAttackTick == -1)
-    {
-        m_prevAttackTick = nowTime;
-        cmdQ.push_back(m_prevAttackTick, new CCmdDamage(enemy, this, m_damage));
+    //if (m_prevAttackTick == -1)
+    //{
+    //    m_prevAttackTick = nowTime;
+    //    cmdQ.push_back(m_prevAttackTick, new CCmdDamage(enemy, this, m_damage));
 
-    }
-    else if( m_attackSpeed > 0 )
-    {
-        while (nowTime >= m_prevAttackTick + m_attackSpeed) {
-            m_prevAttackTick += m_attackSpeed;
+    //}
+    //else if( m_attackSpeed > 0 )
+    //{
+    //    while (nowTime >= m_prevAttackTick + m_attackSpeed) {
+    //        m_prevAttackTick += m_attackSpeed;
 
-            cmdQ.push_back(m_prevAttackTick, new CCmdDamage(enemy, this, m_damage));
-        }
-    }
+    //        cmdQ.push_back(m_prevAttackTick, new CCmdDamage(enemy, this, m_damage));
+    //    }
+    //}
+    m_loopUpdater.Update(nowTime, [&](int time) {
+            cmdQ.push_back( time, new CCmdDamage(enemy, this, m_damage));
+        });
+
+    
 
     std::for_each(m_skillList.begin(), m_skillList.end(), [&]( Skill* skill) -> void{
         skill->updateFrame(cmdQ, nowTime, enemy, ourTeam, this);
@@ -76,7 +91,7 @@ bool Object::damaged(int damage, const std::string& attacker ) {
 
     m_hp -= damage;
 
- //   std::cout << m_name <<"(hp:" << std::to_string(m_hp) << ") is Damaged(damage:" << std::to_string(damage) <<") from " << attacker << std::endl;
+    //std::cout << m_name <<"(hp:" << std::to_string(m_hp) << ") is Damaged(damage:" << std::to_string(damage) <<") from " << attacker << std::endl;
 
     if( isDead() )
         std::cout << m_name << " is Dead" << std::endl;
@@ -91,7 +106,7 @@ bool Object::heal(int _hp, const std::string& healer) {
 
     m_hp += _hp;
 
- //   std::cout << getName() << "(HP:" << std::to_string(m_hp) << ") is Healed(hp:" << std::to_string(_hp) << ")  from " << healer << std::endl;
+    //std::cout << getName() << "(HP:" << std::to_string(m_hp) << ") is Healed(hp:" << std::to_string(_hp) << ")  from " << healer << std::endl;
     return true;
 }
 /// <summary>
