@@ -11,11 +11,11 @@ class ContinuousEffect;
 class Command
 {
 protected:
-	Party* m_target;
+	Party*	m_enemy;
 	Object* m_owner;
-	int m_value;
+	int		m_value;
 public:
-	Command() : m_target(nullptr), m_owner(nullptr),m_value(0) {}
+	Command() : m_enemy(nullptr), m_owner(nullptr),m_value(0) {}
 	virtual ~Command() {}
 	virtual void Exec(int nowTime) = 0;
 };
@@ -25,9 +25,9 @@ public:
 class CCmdDamage : public Command {
 	
 public:
-	CCmdDamage( Party* target, Object* owner, int damage)
+	CCmdDamage( Party* enemy, Object* owner, int damage)
 	{
-		m_target = target;
+		m_enemy = enemy;
 		m_owner = owner;
 		m_value = damage;
 	}
@@ -37,9 +37,9 @@ public:
 
 class CCmdDamageWide : public Command{
 public:
-	CCmdDamageWide(Party* target, Object* owner, int damage)
+	CCmdDamageWide(Party* enemy, Object* owner, int damage)
 	{
-		m_target = target;
+		m_enemy = enemy;
 		m_owner = owner;
 		m_value = damage;
 	}
@@ -57,10 +57,10 @@ class CCmdSkill : public Command {
 
 public:
 	virtual ~CCmdSkill();
-	CCmdSkill(Party* target, Party* ally, Object* owner, const std::shared_ptr<SkillEffect>& effect)
+	CCmdSkill(Party* enemy, Party* ally, Object* owner, const std::shared_ptr<SkillEffect>& effect)
 	{
 		m_ally		= ally;
-		m_target	= target;
+		m_enemy		= enemy;
 		m_owner		= owner;
 		m_effect	= effect;
 	}

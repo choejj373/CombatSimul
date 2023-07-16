@@ -24,7 +24,7 @@ protected:
 	LoopUpdater		m_loopUpdater;
 public:
 	virtual ~ContinuousEffect();
-	ContinuousEffect(int continuousTime, int intervalTime, int value, EFFECT_TARGET_TYPE targetType, short targetMaxCount, EFFECT_TYPE type  );
+	ContinuousEffect(int continuousTime, int intervalTime, int value, EFFECT_TARGET_TYPE targetType, short targetMaxCount, EFFECT_TYPE type , int expireTime  );
 
 public:
 	EFFECT_TARGET_TYPE	getTargetType() const { return m_targetType; }

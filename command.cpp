@@ -8,14 +8,14 @@ void CCmdDamage::Exec(int nowTime){
 	if (m_owner->isDead())
 		return;
 
-	m_target->damaged(m_value, m_owner->getName() );
+	m_enemy->damaged(m_value, m_owner->getName() );
 
 };
 
 void CCmdDamageWide::Exec(int nowTime) {
 	if (m_owner->isDead())
 		return;
-	m_target->damagedAll(m_value, m_owner->getName());
+	m_enemy->damagedAll(m_value, m_owner->getName());
 };
 
 CCmdSkill::~CCmdSkill()
@@ -29,13 +29,13 @@ void CCmdSkill::Exec(int nowTime)
 	switch (m_effect->getTargetType())
 	{
 	case EFFECT_TARGET_TYPE::SELF:
-		m_owner->heal(m_effect->getValue(), m_owner->getName());//? heal->skillEffected
+		m_owner->skillEffected(nowTime, m_effect, m_owner->getName());
 		break;
 	case EFFECT_TARGET_TYPE::ALLY:
 		m_ally->skillEffected(nowTime, m_effect, m_owner->getName());
 		break;
 	case EFFECT_TARGET_TYPE::ENEMY:
-		m_target->skillEffected(nowTime, m_effect, m_owner->getName());
+		m_enemy->skillEffected(nowTime, m_effect, m_owner->getName());
 	default:
 		break;
 	}

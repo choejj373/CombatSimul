@@ -5,7 +5,14 @@
 #include "command.h"
 
 
-ContinuousEffect::ContinuousEffect(int continuousTime, int intervalTime, int value, EFFECT_TARGET_TYPE targetType, short targetMaxCount, EFFECT_TYPE type)
+ContinuousEffect::ContinuousEffect(
+	int continuousTime, 
+	int intervalTime, 
+	int value, 
+	EFFECT_TARGET_TYPE targetType, 
+	short targetMaxCount, 
+	EFFECT_TYPE type,
+	int expireTime )
 {
 	m_continuousTime = continuousTime;
 	m_intervalTime = intervalTime;
@@ -14,7 +21,7 @@ ContinuousEffect::ContinuousEffect(int continuousTime, int intervalTime, int val
 	m_targetMaxCount = targetMaxCount;
 	m_type = type;
 
-	m_loopUpdater.init(-1, intervalTime);
+	m_loopUpdater.init(-1, intervalTime, expireTime);
 
 	//std::cout << "ContinuousEffect::ContinuousEffect" << std::endl;
 }
@@ -33,6 +40,6 @@ void ContinuousEffect::updateFrame(CommandQ& cmdQ, int nowTime, Party* ally, Obj
 	}
 	else
 	{
-		extraStat.at( static_cast<size_t>(m_type) ) = getValue();
+		extraStat.at( static_cast<size_t>(m_type) ) += getValue();
 	}
 }

@@ -19,10 +19,12 @@ class Object
 {
 	std::vector<Skill*>                     m_skillList;
 
-    std::list<std::tuple<int, std::shared_ptr<ContinuousEffect>>> m_continuousEffectList;
+    // 지속 효과
+    std::list<std::tuple<int, std::shared_ptr<ContinuousEffect>>> m_continuousEffects;
+    // 지속 효과중 주기적 발동 효과
+    std::list<std::tuple<int, std::shared_ptr<ContinuousEffect>>> m_continuousIntervalEffects;
 
 	std::string m_name;
-	int m_prevAttackTick;
 	int m_hp;
 
 	int m_damage;
@@ -40,14 +42,16 @@ public:
         m_skillList.push_back(skill);
     }
 
-    void setStat(int hp, int damage, int attackSpeed);
+    void    setStat(int hp, int damage, int attackSpeed);
 
+public:
+    void    skillEffected(int nowTime, const std::shared_ptr<SkillEffect>& effect, const std::string& ownerName);
     void    addContinuousEffect(int nowTime, const std::shared_ptr<SkillEffect>& effect);
-    void    continuousEffected(std::shared_ptr<ContinuousEffect>& effect, const std::string& ownerName);
     void    applyEffect(EFFECT_TYPE type, int value, const std::string& ownerName);
+    void    continuousEffected(std::shared_ptr<ContinuousEffect>& effect, const std::string& ownerName);
+
 private:
     void    updateContinuousEffect(CommandQ& cmdQ, int nowTime, Party* ally);
-    int     getDamage();
 
 public:
     void    updateFrame(CommandQ& cmdQ, int nowTime, Party* enemy, Party* ourTeam );
@@ -60,6 +64,9 @@ public:
     bool    isAlive() const { return isDead() ? false : true; }
 
     const std::string& getName() const  { return m_name; }
+
+private:
+    int     getDamage();
 
 };
 

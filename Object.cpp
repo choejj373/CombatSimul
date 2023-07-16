@@ -12,7 +12,6 @@
 #include "effect.h"
 Object::Object( const char* name)
 {
-    m_prevAttackTick = -1;
     m_hp = 0;
 
     m_damage = 0;
@@ -33,7 +32,8 @@ Object::~Object()
 
     m_skillList.clear();
 
-    m_continuousEffectList.clear();
+    m_continuousEffects.clear();
+    m_continuousIntervalEffects.clear();
 
     //std::cout << "Object::~Object" << std::endl;
 
@@ -41,7 +41,7 @@ Object::~Object()
 
 void Object::setStat(int hp, int damage, int attackSpeed)
 {
-    m_loopUpdater.init(-1, attackSpeed);
+    m_loopUpdater.init(-1, attackSpeed, 0);
 
     m_hp = hp;
     m_damage = damage;
@@ -110,34 +110,55 @@ void Object::addContinuousEffect(int nowTime, const std::shared_ptr<SkillEffect>
         effect->getValue(),
         effect->getContinuousTargetType(),//현재 self만 적용
         1,
-        effect->getType()
+        effect->getType(),
+        nowTime + effect->getContinuousTime()
     );
-    m_continuousEffectList.push_back(std::make_tuple( nowTime + effect->getContinuousTime(), newEffect) );
+
+    if( effect->getIntervalTime() == 0 )
+        m_continuousEffects.push_back(std::make_tuple( nowTime + effect->getContinuousTime(), newEffect) );
+    else
+        m_continuousIntervalEffects.push_back(std::make_tuple(nowTime + effect->getContinuousTime(), newEffect));
+
 }
 /// <summary>
-/// 3. list를 돌면서 effect들로부터 효과값들을 누적시켜 가져와서 추가 스텟 저장 변수에 저장
-/// ( 혹은 리스트를 돌때 초기화된 스텟 저장 변수를 넣어준다.
 /// </summary>
 /// <param name="nowTick"></param>
 void Object::updateContinuousEffect(CommandQ& cmdQ, int nowTime, Party* ally)
 {
-
-    std::fill(m_extraStat.begin(), m_extraStat.end(),0);
-
-    for (auto it = m_continuousEffectList.begin(); it != m_continuousEffectList.end(); ++it)
+    // 주기적으로 발동되는 지속 효과 update
+    for (auto it = m_continuousIntervalEffects.begin(); it != m_continuousIntervalEffects.end(); ++it)
     {
         auto effect = std::get<1>(*it);
         effect->updateFrame(cmdQ, nowTime, ally, this, m_extraStat);
     }
 
-    auto it = m_continuousEffectList.begin();
-    while (it != m_continuousEffectList.end())
+
+
+    for(auto it = m_continuousEffects.begin();  it != m_continuousEffects.end(); )
     {
         if (std::get<0>(*it) <= nowTime)
-            it = m_continuousEffectList.erase(it);
+            it = m_continuousEffects.erase(it);
         else
             it++;
     }
+    
+    for(auto it = m_continuousIntervalEffects.begin(); it != m_continuousIntervalEffects.end();)
+    {
+        if (std::get<0>(*it) <= nowTime)
+            it = m_continuousIntervalEffects.erase(it);
+        else
+            it++;
+    }
+
+
+    std::fill(m_extraStat.begin(), m_extraStat.end(), 0);
+    // stat up등의 지속 효과 update
+    for (auto it = m_continuousEffects.begin(); it != m_continuousEffects.end(); ++it)
+    {
+        auto effect = std::get<1>(*it);
+        effect->updateFrame(cmdQ, nowTime, ally, this, m_extraStat);
+    }
+
 
 }
 
@@ -159,5 +180,17 @@ void Object::applyEffect(EFFECT_TYPE type, int value, const std::string& ownerNa
         break;
     default:
         break;
+    }
+}
+
+void  Object::skillEffected(int nowTime, const std::shared_ptr<SkillEffect>& effect, const std::string& ownerName)
+{
+    if (effect->isContinuous())// 지속 효과 일 경우
+    {
+        addContinuousEffect(nowTime, effect);
+    }
+    else// 즉시 효과 발동 일 경우
+    {
+        applyEffect(effect->getType(), effect->getValue(), ownerName);
     }
 }
