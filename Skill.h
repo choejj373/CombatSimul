@@ -77,3 +77,10 @@ public:
     virtual void updateFrame(CommandQ& cmdQ, int nowTime, Party* enemy, Party* ourTeam, Object* owner);
     //void process(CommandQ& cmdQ, int processTime, Party* enemy, Party* ourTeam, Object* owner);
 };
+
+class SkillAtkUp : public Skill {
+    std::shared_ptr<SkillEffect>    m_effect;
+public:
+    SkillAtkUp(int coolTimeTick);
+    virtual void updateFrame(CommandQ& cmdQ, int nowTime, Party* enemy, Party* ourTeam, Object* owner);
+};

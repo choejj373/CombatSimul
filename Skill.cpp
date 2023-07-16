@@ -100,3 +100,15 @@ void SkillDamageDot::updateFrame(CommandQ& cmdQ, int nowTime, Party* enemy, Part
         cmdQ.push_back(time, new CCmdSkill(enemy, ourTeam, owner, m_effect));
         });
 }
+
+SkillAtkUp::SkillAtkUp(int coolTimeTick)
+{
+    m_loopUpdater.init(-1, coolTimeTick);
+    m_effect = std::make_shared<SkillEffect>(5000, EFFECT_TYPE::ATKUP, 100, EFFECT_TARGET_TYPE::ALLY, 1, 0);
+}
+void SkillAtkUp::updateFrame(CommandQ& cmdQ, int nowTime, Party* enemy, Party* ourTeam, Object* owner)
+{
+    m_loopUpdater.Update(nowTime, [&](int time) {
+        cmdQ.push_back(time, new CCmdSkill(ourTeam, ourTeam, owner, m_effect));
+        });
+}

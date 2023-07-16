@@ -29,7 +29,9 @@ class Object
 	int m_attackSpeed;
 
 	Party* m_party;
-    LoopUpdater m_loopUpdater;
+
+    std::vector<int>    m_extraStat;
+    LoopUpdater         m_loopUpdater;
 
 public:
     virtual ~Object();
@@ -45,6 +47,7 @@ public:
     void    applyEffect(EFFECT_TYPE type, int value, const std::string& ownerName);
 private:
     void    updateContinuousEffect(CommandQ& cmdQ, int nowTime, Party* ally);
+    int     getDamage();
 
 public:
     void    updateFrame(CommandQ& cmdQ, int nowTime, Party* enemy, Party* ourTeam );

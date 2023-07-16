@@ -9,7 +9,7 @@
 #include "command.h"
 #include "SkillEffect.h"
 #include "ContinuousEffect.h"
-
+#include "effect.h"
 Object::Object( const char* name)
 {
     m_prevAttackTick = -1;
@@ -22,6 +22,7 @@ Object::Object( const char* name)
 
     m_name = name;
 
+    m_extraStat.resize( static_cast<size_t>(EFFECT_TYPE::MAX));
 
     //std::cout << "Object::Object" << std::endl;
 }
@@ -47,6 +48,11 @@ void Object::setStat(int hp, int damage, int attackSpeed)
     m_attackSpeed = attackSpeed;
 }
 
+int Object::getDamage()
+{
+    return m_damage + m_extraStat.at( static_cast<size_t>(EFFECT_TYPE::ATKUP) );
+}
+
 void Object::updateFrame(CommandQ& cmdQ, int nowTime, Party* enemy, Party* ourTeam) {
 
     if (isDead())
@@ -55,27 +61,10 @@ void Object::updateFrame(CommandQ& cmdQ, int nowTime, Party* enemy, Party* ourTe
     // m_continuousEffectList 처리
     updateContinuousEffect(cmdQ, nowTime, ourTeam );
 
-
-    //물리 공격
-    //if (m_prevAttackTick == -1)
-    //{
-    //    m_prevAttackTick = nowTime;
-    //    cmdQ.push_back(m_prevAttackTick, new CCmdDamage(enemy, this, m_damage));
-
-    //}
-    //else if( m_attackSpeed > 0 )
-    //{
-    //    while (nowTime >= m_prevAttackTick + m_attackSpeed) {
-    //        m_prevAttackTick += m_attackSpeed;
-
-    //        cmdQ.push_back(m_prevAttackTick, new CCmdDamage(enemy, this, m_damage));
-    //    }
-    //}
     m_loopUpdater.Update(nowTime, [&](int time) {
-            cmdQ.push_back( time, new CCmdDamage(enemy, this, m_damage));
+            cmdQ.push_back( time, new CCmdDamage(enemy, this, getDamage()));
         });
 
-    
 
     std::for_each(m_skillList.begin(), m_skillList.end(), [&]( Skill* skill) -> void{
         skill->updateFrame(cmdQ, nowTime, enemy, ourTeam, this);
@@ -91,7 +80,7 @@ bool Object::damaged(int damage, const std::string& attacker ) {
 
     m_hp -= damage;
 
-    //std::cout << m_name <<"(hp:" << std::to_string(m_hp) << ") is Damaged(damage:" << std::to_string(damage) <<") from " << attacker << std::endl;
+    std::cout << m_name <<"(hp:" << std::to_string(m_hp) << ") is Damaged(damage:" << std::to_string(damage) <<") from " << attacker << std::endl;
 
     if( isDead() )
         std::cout << m_name << " is Dead" << std::endl;
@@ -106,7 +95,7 @@ bool Object::heal(int _hp, const std::string& healer) {
 
     m_hp += _hp;
 
-    //std::cout << getName() << "(HP:" << std::to_string(m_hp) << ") is Healed(hp:" << std::to_string(_hp) << ")  from " << healer << std::endl;
+    std::cout << getName() << "(HP:" << std::to_string(m_hp) << ") is Healed(hp:" << std::to_string(_hp) << ")  from " << healer << std::endl;
     return true;
 }
 /// <summary>
@@ -133,10 +122,12 @@ void Object::addContinuousEffect(int nowTime, const std::shared_ptr<SkillEffect>
 void Object::updateContinuousEffect(CommandQ& cmdQ, int nowTime, Party* ally)
 {
 
+    std::fill(m_extraStat.begin(), m_extraStat.end(),0);
+
     for (auto it = m_continuousEffectList.begin(); it != m_continuousEffectList.end(); ++it)
     {
         auto effect = std::get<1>(*it);
-        effect->updateFrame(cmdQ, nowTime, ally, this);
+        effect->updateFrame(cmdQ, nowTime, ally, this, m_extraStat);
     }
 
     auto it = m_continuousEffectList.begin();

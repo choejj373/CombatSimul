@@ -22,10 +22,17 @@ ContinuousEffect::~ContinuousEffect()
 {
 	//std::cout << "ContinuousEffect::~ContinuousEffect" << std::endl;
 }
-void ContinuousEffect::updateFrame(CommandQ& cmdQ, int nowTime, Party* ally, Object* owner)
+void ContinuousEffect::updateFrame(CommandQ& cmdQ, int nowTime, Party* ally, Object* owner, std::vector<int>& extraStat )
 {
-	std::shared_ptr<ContinuousEffect> sharedPtr = shared_from_this();
-	m_loopUpdater.Update(nowTime, [&](int time) {
-		cmdQ.push_back(time, new CCmdEffect(sharedPtr, owner, ally));
-	});
+	if (m_intervalTime > 0)
+	{
+		std::shared_ptr<ContinuousEffect> sharedPtr = shared_from_this();
+		m_loopUpdater.Update(nowTime, [&](int time) {
+			cmdQ.push_back(time, new CCmdEffect(sharedPtr, owner, ally));
+			});
+	}
+	else
+	{
+		extraStat.at( static_cast<size_t>(m_type) ) = getValue();
+	}
 }

@@ -32,6 +32,6 @@ public:
 	short				getTargetMaxCount() const { return m_targetMaxCount; }
 	EFFECT_TYPE			getType() const { return m_type; }
 
-	void				updateFrame(CommandQ& cmdQ, int nowTime, Party* ally, Object* owner );
+	void				updateFrame(CommandQ& cmdQ, int nowTime, Party* ally, Object* owner, std::vector<int>& extraStat);
 };
 

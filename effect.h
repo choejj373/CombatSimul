@@ -3,6 +3,7 @@ enum class EFFECT_TYPE : short {
 	INVALID = -1,
 	ADDHP,
 	SUBHP,
+	ATKUP,
 	MAX
 };
 

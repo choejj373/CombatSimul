@@ -42,6 +42,9 @@ Skill* MakeSkill(int type, int coolTime)
     case 6:
         newSkill = new SkillDamageDot(coolTime);
         break;
+    case 7:
+        newSkill = new SkillAtkUp(coolTime);
+        break;
     default:
         throw std::runtime_error("Invalid Skill Type");
         break;
@@ -178,7 +181,7 @@ int main()
                1,3000,
                6,10000,
            10000, 500, 1000,
-               1,4000,
+               7,4000,
                1,4500,
                1,5000,
                1, 5000,
@@ -206,7 +209,7 @@ int main()
             1, 3000,
             6, 10000,
         20000, 500, 1000,
-            1, 4000,
+            7, 4000,
             1, 4500,
             1, 5000,
             1, 5000,
