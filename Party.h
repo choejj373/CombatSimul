@@ -17,10 +17,10 @@ public:
     Party( const char* name) : m_name(name) {}
 
     void damagedAll(int damage, const std::string&);
-    void healAll(int hp, const std::string&);
     bool damaged(int damage, const std::string&);
-    bool heal(int _hp, const std::string&);
 
+    //bool heal(int _hp, const std::string&);
+    //void healAll(int hp, const std::string&);
     int getHp();
     bool isDead();
     const std::string& getName() const { return m_name; }

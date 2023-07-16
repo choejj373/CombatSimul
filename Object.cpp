@@ -10,6 +10,7 @@
 #include "SkillEffect.h"
 #include "ContinuousEffect.h"
 #include "effect.h"
+#include "ExtraStat.h"
 Object::Object( const char* name)
 {
     m_hp = 0;
@@ -21,7 +22,8 @@ Object::Object( const char* name)
 
     m_name = name;
 
-    m_extraStat.resize( static_cast<size_t>(EFFECT_TYPE::MAX));
+    m_extraStat = std::make_shared<ExtraStat>();
+    //m_extraStat.resize( static_cast<size_t>(EFFECT_TYPE::MAX));
 
     //std::cout << "Object::Object" << std::endl;
 }
@@ -34,6 +36,8 @@ Object::~Object()
 
     m_continuousEffects.clear();
     m_continuousIntervalEffects.clear();
+    m_passiveSkillEffects.clear();
+
 
     //std::cout << "Object::~Object" << std::endl;
 
@@ -50,7 +54,7 @@ void Object::setStat(int hp, int damage, int attackSpeed)
 
 int Object::getDamage()
 {
-    return m_damage + m_extraStat.at( static_cast<size_t>(EFFECT_TYPE::ATKUP) );
+    return m_damage + m_extraStat->getValue( static_cast<size_t>(EFFECT_TYPE::ATKUP) );
 }
 
 void Object::updateFrame(CommandQ& cmdQ, int nowTime, Party* enemy, Party* ourTeam) {
@@ -111,7 +115,8 @@ void Object::addContinuousEffect(int nowTime, const std::shared_ptr<SkillEffect>
         effect->getContinuousTargetType(),//현재 self만 적용
         1,
         effect->getType(),
-        nowTime + effect->getContinuousTime()
+        nowTime + effect->getContinuousTime(),
+        m_extraStat 
     );
 
     if( effect->getIntervalTime() == 0 )
@@ -129,7 +134,7 @@ void Object::updateContinuousEffect(CommandQ& cmdQ, int nowTime, Party* ally)
     for (auto it = m_continuousIntervalEffects.begin(); it != m_continuousIntervalEffects.end(); ++it)
     {
         auto effect = std::get<1>(*it);
-        effect->updateFrame(cmdQ, nowTime, ally, this, m_extraStat);
+        effect->updateFrame(cmdQ, nowTime, ally, this);
     }
 
 
@@ -149,17 +154,6 @@ void Object::updateContinuousEffect(CommandQ& cmdQ, int nowTime, Party* ally)
         else
             it++;
     }
-
-
-    std::fill(m_extraStat.begin(), m_extraStat.end(), 0);
-    // stat up등의 지속 효과 update
-    for (auto it = m_continuousEffects.begin(); it != m_continuousEffects.end(); ++it)
-    {
-        auto effect = std::get<1>(*it);
-        effect->updateFrame(cmdQ, nowTime, ally, this, m_extraStat);
-    }
-
-
 }
 
 

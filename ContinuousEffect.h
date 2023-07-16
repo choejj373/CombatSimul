@@ -7,6 +7,7 @@
 class Object;
 class CommandQ;
 class Party;
+class ExtraStat;
 class ContinuousEffect : public std::enable_shared_from_this<ContinuousEffect>
 {
 public:
@@ -21,10 +22,18 @@ protected:
 	EFFECT_TARGET_TYPE	m_targetType = EFFECT_TARGET_TYPE::INVALID;
 	short			m_targetMaxCount = 0;					// 
 
-	LoopUpdater		m_loopUpdater;
+	LoopUpdater					m_loopUpdater;
+	std::shared_ptr<ExtraStat>	m_extraStat;
 public:
 	virtual ~ContinuousEffect();
-	ContinuousEffect(int continuousTime, int intervalTime, int value, EFFECT_TARGET_TYPE targetType, short targetMaxCount, EFFECT_TYPE type , int expireTime  );
+	ContinuousEffect(int continuousTime, 
+		int intervalTime, 
+		int value, 
+		EFFECT_TARGET_TYPE targetType, 
+		short targetMaxCount, 
+		EFFECT_TYPE type , 
+		int expireTime,
+		const std::shared_ptr<ExtraStat>& extraStat );
 
 public:
 	EFFECT_TARGET_TYPE	getTargetType() const { return m_targetType; }
@@ -32,6 +41,6 @@ public:
 	short				getTargetMaxCount() const { return m_targetMaxCount; }
 	EFFECT_TYPE			getType() const { return m_type; }
 
-	void				updateFrame(CommandQ& cmdQ, int nowTime, Party* ally, Object* owner, std::vector<int>& extraStat);
+	void				updateFrame(CommandQ& cmdQ, int nowTime, Party* ally, Object* owner );
 };
 

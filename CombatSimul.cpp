@@ -6,17 +6,18 @@
 #include <algorithm>
 #include <tuple>
 #include <windows.h>
+#include <memory>
+#include <vector>
+
 #include "Party.h"
 #include "Object.h"
 #include "Skill.h"
-
-#include <memory>
-#include <vector>
 #include "CommandQ.h"
 #include "command.h"
-
+#include "SkillEffect.h"
 using namespace std::chrono;
 using namespace std;
+
 
 Skill* MakeSkill(int type, int coolTime)
 {
@@ -24,26 +25,47 @@ Skill* MakeSkill(int type, int coolTime)
    // std::cout << type << ", " << coolTime << std::endl;
     switch (type)
     {
-    case 1:
-        newSkill = new SkillDamage( coolTime );
+        case 1:
+        {
+            auto effect = std::make_shared<SkillEffect>(0, EFFECT_TYPE::SUBHP, 400, EFFECT_TARGET_TYPE::ENEMY, 1);
+            newSkill = new Skill(coolTime, effect);
+        }
         break;
     case 2:
-        newSkill = new SkillHeal( coolTime );
+        {
+            auto effect = std::make_shared<SkillEffect>(0, EFFECT_TYPE::ADDHP, 300, EFFECT_TARGET_TYPE::ALLY, 1);
+            newSkill = new Skill(coolTime, effect);
+        }
         break;
     case 3:
-        newSkill = new SkillDamageWide(coolTime);
+        {
+            auto effect = std::make_shared<SkillEffect>(0, EFFECT_TYPE::SUBHP, 150, EFFECT_TARGET_TYPE::ENEMY, 5);
+            newSkill = new Skill(coolTime, effect);
+        }
         break;
     case 4:
-        newSkill = new SkillHealWide(coolTime);
+        {
+            auto effect = std::make_shared<SkillEffect>(0, EFFECT_TYPE::ADDHP, 150, EFFECT_TARGET_TYPE::ALLY, 5);
+            newSkill = new Skill(coolTime, effect);
+        }
         break;
-    case 5:
-        newSkill = new SkillHealDot(coolTime);
+    case 5: 
+        {
+            auto effect = std::make_shared<SkillEffect>(5000, EFFECT_TYPE::ADDHP, 200, EFFECT_TARGET_TYPE::ALLY, 1, 1000);
+            newSkill = new Skill(coolTime, effect);
+        }
         break;
-    case 6:
-        newSkill = new SkillDamageDot(coolTime);
+    case 6: 
+        {
+            auto effect = std::make_shared<SkillEffect>(7000, EFFECT_TYPE::SUBHP, 100, EFFECT_TARGET_TYPE::ENEMY, 1, 1000);
+            newSkill = new Skill(coolTime, effect);
+        }
         break;
-    case 7:
-        newSkill = new SkillAtkUp(coolTime);
+    case 7: 
+        {
+            auto effect = std::make_shared<SkillEffect>(5000, EFFECT_TYPE::ATKUP, 100, EFFECT_TARGET_TYPE::ALLY, 1, 0);
+            newSkill = new Skill(coolTime, effect);
+        }
         break;
     default:
         throw std::runtime_error("Invalid Skill Type");

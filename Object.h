@@ -14,7 +14,7 @@ class Effect;
 class CommandQ;
 class SkillEffect;
 class ContinuousEffect;
-
+class ExtraStat;
 class Object
 {
 	std::vector<Skill*>                     m_skillList;
@@ -24,6 +24,9 @@ class Object
     // 지속 효과중 주기적 발동 효과
     std::list<std::tuple<int, std::shared_ptr<ContinuousEffect>>> m_continuousIntervalEffects;
 
+    // passive skill effect
+    std::list<std::tuple<int, std::shared_ptr<ContinuousEffect>>> m_passiveSkillEffects;
+
 	std::string m_name;
 	int m_hp;
 
@@ -32,8 +35,9 @@ class Object
 
 	Party* m_party;
 
-    std::vector<int>    m_extraStat;
-    LoopUpdater         m_loopUpdater;
+    //std::vector<int>            m_extraStat;
+    LoopUpdater                 m_loopUpdater;
+    std::shared_ptr<ExtraStat>  m_extraStat;
 
 public:
     virtual ~Object();
